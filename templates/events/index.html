@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}События - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-calendar-event"></i> Поиск местных событий</h2>
+        <a href="{{ url_for('events.add_event') }}" class="btn btn-danger">
+            <i class="bi bi-plus-circle"></i> Добавить событие
+        </a>
+        <a href="{{ url_for('events.saved_events') }}" class="btn btn-outline-danger">
+            <i class="bi bi-bookmark"></i> Избранное
+        </a>
+        <a href="{{ url_for('events.map') }}" class="btn btn-outline-danger">
+            <i class="bi bi-geo-alt"></i> Карта
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <select class="form-select" name="category" onchange="this.form.submit()">
+                    <option value="">Все категории</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat }}" {{ 'selected' if selected_category == cat }}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" name="date" onchange="this.form.submit()">
+                    <option value="">Все даты</option>
+                    <option value="today" {{ 'selected' if selected_date == 'today' }}>Сегодня</option>
+                    <option value="week" {{ 'selected' if selected_date == 'week' }}>Эта неделя</option>
+                    <option value="month" {{ 'selected' if selected_date == 'month' }}>Этот месяц</option>
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for event in events %}
+    <div class="col-md-6">
+        <div class="card event-card">
+            <div class="card-body">
+                <h5 class="card-title">{{ event.title }}</h5>
+                <p class="event-date">
+                    <i class="bi bi-calendar"></i> {{ event.date.strftime('%d.%m.%Y %H:%M') }}
+                    {% if event.location %}
+                    <br><i class="bi bi-geo-alt"></i> {{ event.location }}
+                    {% endif %}
+                </p>
+                {% if event.category %}
+                <span class="badge bg-secondary">{{ event.category }}</span>
+                {% endif %}
+                {% if event.price_type == 'free' %}
+                <span class="badge bg-success">Бесплатно</span>
+                {% elif event.price %}
+                <span class="badge bg-info">{{ "%.2f"|format(event.price) }} ₽</span>
+                {% endif %}
+                {% if event.description %}
+                <p class="card-text mt-2">{{ event.description[:150] }}{% if event.description|length > 150 %}...{% endif %}</p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{{ url_for('events.view_event', id=event.id) }}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-eye"></i> Подробнее
+                    </a>
+                    {% if not event.is_saved %}
+                    <a href="{{ url_for('events.save_event', id=event.id) }}" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-bookmark"></i> Сохранить
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> События не найдены
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

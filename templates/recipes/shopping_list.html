@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Список покупок - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-cart"></i> Список покупок</h2>
+        <p class="text-muted">Неделя: {{ week_start.strftime('%d.%m.%Y') }} - {{ week_end.strftime('%d.%m.%Y') }}</p>
+        <a href="{{ url_for('recipes.meal_planner') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Назад к планировщику
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5>Ингредиенты для покупки:</h5>
+                <ul class="list-group">
+                    {% for ingredient in ingredients %}
+                    <li class="list-group-item">
+                        <input type="checkbox" class="form-check-input me-2" id="ingredient{{ loop.index }}">
+                        <label class="form-check-label" for="ingredient{{ loop.index }}">{{ ingredient }}</label>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-muted">Нет ингредиентов для покупки</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

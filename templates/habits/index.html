@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Привычки - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-heart-pulse"></i> Трекер полезных привычек</h2>
+        <a href="{{ url_for('habits.add_habit') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Добавить привычку
+        </a>
+        <a href="{{ url_for('habits.statistics') }}" class="btn btn-outline-success">
+            <i class="bi bi-graph-up"></i> Статистика
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for habit in habits %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="card-title">{{ habit.name }}</h5>
+                    <span class="badge" style="background-color: {{ habit.color }}; width: 20px; height: 20px; border-radius: 50%;"></span>
+                </div>
+                {% if habit.description %}
+                <p class="card-text text-muted">{{ habit.description }}</p>
+                {% endif %}
+                <div class="mb-3">
+                    <strong>Текущая серия:</strong> {{ habit.current_streak }} дней<br>
+                    <strong>Всего выполнено:</strong> {{ habit.total_logs }} раз
+                </div>
+                <div class="btn-group w-100" role="group">
+                    <a href="{{ url_for('habits.view_habit', id=habit.id) }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-eye"></i> Подробнее
+                    </a>
+                    <a href="{{ url_for('habits.edit_habit', id=habit.id) }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{{ url_for('habits.delete_habit', id=habit.id) }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Удалить привычку?')">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> У вас пока нет привычек. Добавьте первую привычку для отслеживания!
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

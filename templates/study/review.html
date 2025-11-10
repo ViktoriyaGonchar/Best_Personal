@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Повторение карточек - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h5>Повторение карточек</h5>
+                <p class="mb-0">Осталось карточек: {{ total_due }}</p>
+            </div>
+            <div class="card-body text-center">
+                <div class="study-card" id="cardFront">
+                    <div>
+                        <h4>Вопрос:</h4>
+                        <p>{{ card.front }}</p>
+                        <button class="btn btn-primary mt-3" onclick="showAnswer()">Показать ответ</button>
+                    </div>
+                </div>
+                <div class="study-card study-card-back" id="cardBack" style="display: none;">
+                    <div>
+                        <h4>Ответ:</h4>
+                        <p>{{ card.back }}</p>
+                        <div class="mt-4">
+                            <p>Насколько хорошо вы знали ответ?</p>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-danger" onclick="answerCard(0)">Плохо</button>
+                                <button class="btn btn-warning" onclick="answerCard(2)">Средне</button>
+                                <button class="btn btn-success" onclick="answerCard(4)">Хорошо</button>
+                                <button class="btn btn-primary" onclick="answerCard(5)">Отлично</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function showAnswer() {
+        document.getElementById('cardFront').style.display = 'none';
+        document.getElementById('cardBack').style.display = 'flex';
+    }
+    
+    function answerCard(quality) {
+        fetch(`/study/review/{{ card.id }}/answer`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({quality: quality})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/study/review';
+            }
+        });
+    }
+</script>
+{% endblock %}
+

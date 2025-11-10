@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+
+{% block title %}Демонстрация - Best Personal{% endblock %}
+
+{% block extra_css %}
+<style>
+    .demo-section {
+        margin-bottom: 4rem;
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    .demo-card {
+        transition: transform 0.2s;
+    }
+    .demo-card:hover {
+        transform: translateY(-5px);
+    }
+    .demo-badge {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-12 text-center">
+        <h1 class="display-4 mb-3">🎯 Демонстрация Best Personal</h1>
+        <p class="lead">Ознакомьтесь с возможностями всех модулей приложения</p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg me-2">
+            <i class="bi bi-person-plus"></i> Начать использовать
+        </a>
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary btn-lg">
+            <i class="bi bi-house"></i> На главную
+        </a>
+    </div>
+</div>
+
+<!-- Финансы -->
+<div class="demo-section">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-wallet2 text-primary"></i> 1. Personal Finance Assistant</h2>
+            <p class="text-muted">Учет доходов и расходов с визуализацией и экспортом</p>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center bg-success text-white demo-card">
+                <div class="card-body">
+                    <h5>Доходы</h5>
+                    <h3>{{ "%.2f"|format(finance.income) }} ₽</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center bg-danger text-white demo-card">
+                <div class="card-body">
+                    <h5>Расходы</h5>
+                    <h3>{{ "%.2f"|format(finance.expenses) }} ₽</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center bg-primary text-white demo-card">
+                <div class="card-body">
+                    <h5>Баланс</h5>
+                    <h3>{{ "%.2f"|format(finance.balance) }} ₽</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Последние транзакции</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Категория</th>
+                                    <th>Описание</th>
+                                    <th>Сумма</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for t in finance.transactions %}
+                                <tr>
+                                    <td>{{ t.date }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if t.type == 'income' else 'danger' }}">
+                                            {{ t.category }}
+                                        </span>
+                                    </td>
+                                    <td>{{ t.description }}</td>
+                                    <td class="{{ 'text-success' if t.type == 'income' else 'text-danger' }}">
+                                        {{ '+' if t.type == 'income' else '-' }}{{ "%.2f"|format(t.amount) }} ₽
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge bg-info demo-badge">📊 Статистика по периодам</span>
+                        <span class="badge bg-info demo-badge">📈 Графики и диаграммы</span>
+                        <span class="badge bg-info demo-badge">📄 Экспорт в Excel/PDF</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Привычки -->
+<div class="demo-section">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-heart-pulse text-success"></i> 2. Healthy Habits Tracker</h2>
+            <p class="text-muted">Отслеживание полезных привычек с мотивацией и статистикой</p>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        {% for habit in habits %}
+        <div class="col-md-4">
+            <div class="card demo-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title">{{ habit.name }}</h5>
+                        <span class="badge" style="background-color: {{ habit.color }}; width: 20px; height: 20px; border-radius: 50%;"></span>
+                    </div>
+                    <div class="mb-3">
+                        <p class="mb-1"><strong>Текущая серия:</strong> {{ habit.streak }} дней 🔥</p>
+                        <p class="mb-0"><strong>Всего выполнено:</strong> {{ habit.total }} раз</p>
+                    </div>
+                    <div class="progress mb-2" style="height: 10px;">
+                        <div class="progress-bar" style="width: {{ (habit.streak / 30 * 100)|round }}%; background-color: {{ habit.color }};"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="row mt-3">
+        <div class="col-12">
+            <span class="badge bg-success demo-badge">📅 Календарь выполнения</span>
+            <span class="badge bg-success demo-badge">🔥 Отслеживание серий</span>
+            <span class="badge bg-success demo-badge">🔔 Напоминания</span>
+            <span class="badge bg-success demo-badge">📊 Статистика прогресса</span>
+        </div>
+    </div>
+</div>
+
+<!-- Рецепты -->
+<div class="demo-section">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-egg-fried text-warning"></i> 3. Recipe Manager & Meal Planner</h2>
+            <p class="text-muted">База рецептов, планировщик питания и автоматический список покупок</p>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        {% for recipe in recipes %}
+        <div class="col-md-4">
+            <div class="card demo-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ recipe.title }}</h5>
+                    <span class="badge bg-secondary">{{ recipe.category }}</span>
+                    <div class="mt-3">
+                        {% if recipe.prep_time %}
+                        <small class="text-muted"><i class="bi bi-clock"></i> Подготовка: {{ recipe.prep_time }} мин</small><br>
+                        {% endif %}
+                        {% if recipe.cook_time %}
+                        <small class="text-muted"><i class="bi bi-fire"></i> Готовка: {{ recipe.cook_time }} мин</small><br>
+                        {% endif %}
+                        <small class="text-muted"><i class="bi bi-people"></i> Порций: {{ recipe.servings }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Планировщик питания на неделю</h5>
+                    <p class="text-muted">Автоматическое формирование списка покупок на основе выбранных рецептов</p>
+                    <span class="badge bg-warning demo-badge">📅 Планирование на неделю</span>
+                    <span class="badge bg-warning demo-badge">🛒 Автоматический список покупок</span>
+                    <span class="badge bg-warning demo-badge">🔍 Поиск по ингредиентам</span>
+                    <span class="badge bg-warning demo-badge">📸 Фотографии блюд</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Обучение -->
+<div class="demo-section">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-book text-info"></i> 4. Personal Study Assistant</h2>
+            <p class="text-muted">Карточки для запоминания, интервальные повторения и таймер Pomodoro</p>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center demo-card">
+                <div class="card-body">
+                    <h3>{{ study.total_cards }}</h3>
+                    <p class="text-muted">Всего карточек</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center demo-card">
+                <div class="card-body">
+                    <h3>{{ study.cards_due }}</h3>
+                    <p class="text-muted">Требуют повторения</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center demo-card">
+                <div class="card-body">
+                    <h3>{{ study.topics|length }}</h3>
+                    <p class="text-muted">Тем</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center demo-card">
+                <div class="card-body">
+                    <h3>2</h3>
+                    <p class="text-muted">Сессий сегодня</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Темы обучения</h5>
+                    <ul>
+                        {% for topic in study.topics %}
+                        <li>{{ topic }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Последние сессии</h5>
+                    <ul class="list-unstyled">
+                        {% for session in study.recent_sessions %}
+                        <li>
+                            <i class="bi bi-{{ 'hourglass-split' if session.type == 'pomodoro' else 'arrow-repeat' }}"></i>
+                            {{ 'Pomodoro' if session.type == 'pomodoro' else 'Повторение' }}: 
+                            {{ session.duration }} мин
+                            {% if session.cards %}({{ session.cards }} карточек){% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-3">
+        <div class="col-12">
+            <span class="badge bg-info demo-badge">🃏 Карточки для запоминания</span>
+            <span class="badge bg-info demo-badge">🔄 Интервальные повторения (SM-2)</span>
+            <span class="badge bg-info demo-badge">⏱️ Таймер Pomodoro</span>
+                    <span class="badge bg-info demo-badge">📊 Статистика прогресса</span>
+        </div>
+    </div>
+</div>
+
+<!-- Имущество -->
+<div class="demo-section">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-box-seam text-secondary"></i> 5. Home Inventory Manager</h2>
+            <p class="text-muted">Учет домашнего имущества с напоминаниями о гарантии</p>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card text-center demo-card">
+                <div class="card-body">
+                    <h3>{{ inventory.total_items }}</h3>
+                    <p class="text-muted">Всего предметов</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-center demo-card">
+                <div class="card-body">
+                    <h3>{{ "%.0f"|format(inventory.total_value / 1000) }}K ₽</h3>
+                    <p class="text-muted">Общая стоимость</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4 mb-3">
+        {% for item in inventory.items %}
+        <div class="col-md-4">
+            <div class="card demo-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <span class="badge bg-secondary">{{ item.category }}</span>
+                    <span class="badge bg-info">{{ item.room }}</span>
+                    <p class="mt-2 mb-0"><strong>Стоимость:</strong> {{ "%.0f"|format(item.price) }} ₽</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% if inventory.warranty_warnings > 0 %}
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i> 
+        <strong>Внимание!</strong> У {{ inventory.warranty_warnings }} предметов скоро истекает гарантия
+    </div>
+    {% endif %}
+    
+    <div class="row">
+        <div class="col-12">
+            <span class="badge bg-secondary demo-badge">📦 Каталогизация по комнатам</span>
+            <span class="badge bg-secondary demo-badge">💰 Учет стоимости</span>
+            <span class="badge bg-secondary demo-badge">🛡️ Напоминания о гарантии</span>
+            <span class="badge bg-secondary demo-badge">🔍 Поиск по вещам</span>
+            <span class="badge bg-secondary demo-badge">📸 Фотографии предметов</span>
+        </div>
+    </div>
+</div>
+
+<!-- События -->
+<div class="demo-section">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-calendar-event text-danger"></i> 6. Local Event Finder</h2>
+            <p class="text-muted">Поиск и сохранение интересных событий в городе</p>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        {% for event in events %}
+        <div class="col-md-4">
+            <div class="card demo-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.title }}</h5>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-calendar"></i> {{ event.date }} в {{ event.time }}<br>
+                        <i class="bi bi-geo-alt"></i> {{ event.location }}
+                    </p>
+                    <span class="badge bg-secondary">{{ event.category }}</span>
+                    {% if event.price_type == 'free' %}
+                    <span class="badge bg-success">Бесплатно</span>
+                    {% elif event.price %}
+                    <span class="badge bg-info">{{ "%.0f"|format(event.price) }} ₽</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="row mt-3">
+        <div class="col-12">
+            <span class="badge bg-danger demo-badge">📅 Фильтрация по дате</span>
+            <span class="badge bg-danger demo-badge">🏷️ Категории событий</span>
+            <span class="badge bg-danger demo-badge">⭐ Избранное</span>
+            <span class="badge bg-danger demo-badge">🗺️ Карта мероприятий</span>
+        </div>
+    </div>
+</div>
+
+<!-- Призыв к действию -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center py-5">
+                <h2 class="mb-4">Готовы начать использовать Best Personal?</h2>
+                <p class="lead mb-4">Зарегистрируйтесь бесплатно и получите доступ ко всем функциям</p>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg me-2">
+                    <i class="bi bi-person-plus"></i> Зарегистрироваться
+                </a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-box-arrow-in-right"></i> Войти
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

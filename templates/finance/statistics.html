@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Статистика - Best Personal{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chart-container {
+        height: 400px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-graph-up"></i> Статистика</h2>
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('finance.statistics', period='week') }}" class="btn btn-outline-primary {{ 'active' if period == 'week' }}">Неделя</a>
+            <a href="{{ url_for('finance.statistics', period='month') }}" class="btn btn-outline-primary {{ 'active' if period == 'month' }}">Месяц</a>
+            <a href="{{ url_for('finance.statistics', period='year') }}" class="btn btn-outline-primary {{ 'active' if period == 'year' }}">Год</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Статистика по категориям</h5>
+            </div>
+            <div class="card-body">
+                <div id="chart" class="chart-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Детальная статистика</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Категория</th>
+                            <th>Тип</th>
+                            <th>Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in category_stats %}
+                        <tr>
+                            <td>{{ stat[0] }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'success' if stat[1] == 'income' else 'danger' }}">
+                                    {{ 'Доход' if stat[1] == 'income' else 'Расход' }}
+                                </span>
+                            </td>
+                            <td>{{ "%.2f"|format(stat[2]) }} ₽</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    var data = [{
+        labels: {{ chart_data.labels|tojson }},
+        values: {{ chart_data.data|tojson }},
+        type: 'pie'
+    }];
+    
+    var layout = {
+        title: 'Распределение по категориям'
+    };
+    
+    Plotly.newPlot('chart', data, layout);
+</script>
+{% endblock %}
+

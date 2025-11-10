@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Поиск рецептов - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-search"></i> Поиск рецептов</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="q" placeholder="Поиск по названию, описанию, ингредиентам..." value="{{ query }}">
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" name="category">
+                            <option value="">Все категории</option>
+                            <option value="завтрак" {{ 'selected' if category == 'завтрак' }}>Завтрак</option>
+                            <option value="обед" {{ 'selected' if category == 'обед' }}>Обед</option>
+                            <option value="ужин" {{ 'selected' if category == 'ужин' }}>Ужин</option>
+                            <option value="десерт" {{ 'selected' if category == 'десерт' }}>Десерт</option>
+                            <option value="закуска" {{ 'selected' if category == 'закуска' }}>Закуска</option>
+                            <option value="напиток" {{ 'selected' if category == 'напиток' }}>Напиток</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-warning w-100">Поиск</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for recipe in recipes %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+            {% if recipe.image_path %}
+            <img src="{{ url_for('static', filename=recipe.image_path) }}" class="card-img-top recipe-image" alt="{{ recipe.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ recipe.title }}</h5>
+                {% if recipe.category %}
+                <span class="badge bg-secondary">{{ recipe.category }}</span>
+                {% endif %}
+                <a href="{{ url_for('recipes.view_recipe', id=recipe.id) }}" class="btn btn-warning btn-sm mt-2">
+                    <i class="bi bi-eye"></i> Просмотр
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Рецепты не найдены
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

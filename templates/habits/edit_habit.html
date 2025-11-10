@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Редактировать привычку - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Редактировать привычку</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Название привычки *</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ habit.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Описание</label>
+                        <textarea class="form-control" id="description" name="description" rows="3">{{ habit.description or '' }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="color" class="form-label">Цвет</label>
+                        <input type="color" class="form-control form-control-color" id="color" name="color" value="{{ habit.color }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="reminder_time" class="form-label">Время напоминания</label>
+                        <input type="time" class="form-control" id="reminder_time" name="reminder_time" value="{{ habit.reminder_time.strftime('%H:%M') if habit.reminder_time else '' }}">
+                    </div>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                    <a href="{{ url_for('habits.index') }}" class="btn btn-secondary">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

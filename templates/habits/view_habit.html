@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}{{ habit.name }} - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>{{ habit.name }}</h2>
+        <a href="{{ url_for('habits.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Назад
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ current_streak }}</h3>
+                <p class="text-muted">Текущая серия (дней)</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ total_days }}</h3>
+                <p class="text-muted">Всего выполнено</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ "%.1f"|format(completion_rate) }}%</h3>
+                <p class="text-muted">Процент выполнения (30 дней)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Календарь выполнения (последние 30 дней)</h5>
+            </div>
+            <div class="card-body">
+                <div id="calendar" class="d-flex flex-wrap"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const logDates = {{ log_dates|tojson }};
+    const today = new Date().toISOString().split('T')[0];
+    
+    const calendar = document.getElementById('calendar');
+    for (let i = 29; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        const day = date.getDate();
+        
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'calendar-day';
+        dayDiv.textContent = day;
+        dayDiv.dataset.date = dateStr;
+        
+        if (logDates.includes(dateStr)) {
+            dayDiv.classList.add('completed');
+        }
+        if (dateStr === today) {
+            dayDiv.classList.add('today');
+        }
+        
+        dayDiv.addEventListener('click', function() {
+            toggleHabitLog({{ habit.id }}, dateStr);
+        });
+        
+        calendar.appendChild(dayDiv);
+    }
+    
+    function toggleHabitLog(habitId, date) {
+        fetch(`/habits/log/${habitId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({date: date})
+        })
+        .then(response => response.json())
+        .then(data => {
+            const dayDiv = document.querySelector(`[data-date="${date}"]`);
+            if (data.status === 'added') {
+                dayDiv.classList.add('completed');
+            } else {
+                dayDiv.classList.remove('completed');
+            }
+        });
+    }
+</script>
+{% endblock %}
+

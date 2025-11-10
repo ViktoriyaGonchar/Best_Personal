@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Карточки - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-collection"></i> Мои карточки</h2>
+        <a href="{{ url_for('study.add_card') }}" class="btn btn-info">
+            <i class="bi bi-plus-circle"></i> Добавить карточку
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <select class="form-select" name="topic" onchange="this.form.submit()">
+                    <option value="">Все темы</option>
+                    {% for topic in topics %}
+                    <option value="{{ topic }}" {{ 'selected' if selected_topic == topic }}>{{ topic }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for card in cards %}
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    {% if card.topic %}
+                    <span class="badge bg-secondary">{{ card.topic }}</span>
+                    {% endif %}
+                    <div>
+                        <a href="{{ url_for('study.edit_card', id=card.id) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{{ url_for('study.delete_card', id=card.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Удалить карточку?')">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong>Вопрос:</strong>
+                    <p>{{ card.front }}</p>
+                </div>
+                <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#answer{{ card.id }}">
+                    Показать ответ
+                </button>
+                <div class="collapse mt-2" id="answer{{ card.id }}">
+                    <div class="card card-body">
+                        <strong>Ответ:</strong>
+                        <p>{{ card.back }}</p>
+                    </div>
+                </div>
+                {% if card.next_review %}
+                <small class="text-muted d-block mt-2">
+                    Следующее повторение: {{ card.next_review.strftime('%d.%m.%Y %H:%M') }}
+                </small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> У вас пока нет карточек. Добавьте первую карточку для обучения!
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Редактировать рецепт - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Редактировать рецепт</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Название *</label>
+                                <input type="text" class="form-control" id="title" name="title" value="{{ recipe.title }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Категория</label>
+                                <select class="form-select" id="category" name="category">
+                                    <option value="">Выберите категорию</option>
+                                    <option value="завтрак" {{ 'selected' if recipe.category == 'завтрак' }}>Завтрак</option>
+                                    <option value="обед" {{ 'selected' if recipe.category == 'обед' }}>Обед</option>
+                                    <option value="ужин" {{ 'selected' if recipe.category == 'ужин' }}>Ужин</option>
+                                    <option value="десерт" {{ 'selected' if recipe.category == 'десерт' }}>Десерт</option>
+                                    <option value="закуска" {{ 'selected' if recipe.category == 'закуска' }}>Закуска</option>
+                                    <option value="напиток" {{ 'selected' if recipe.category == 'напиток' }}>Напиток</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Описание</label>
+                                <textarea class="form-control" id="description" name="description" rows="3">{{ recipe.description or '' }}</textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="prep_time" class="form-label">Время подготовки (мин)</label>
+                                        <input type="number" class="form-control" id="prep_time" name="prep_time" value="{{ recipe.prep_time or '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="cook_time" class="form-label">Время готовки (мин)</label>
+                                        <input type="number" class="form-control" id="cook_time" name="cook_time" value="{{ recipe.cook_time or '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="servings" class="form-label">Порций</label>
+                                        <input type="number" class="form-control" id="servings" name="servings" value="{{ recipe.servings or '' }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="calories" class="form-label">Калории (на порцию)</label>
+                                <input type="number" step="0.1" class="form-control" id="calories" name="calories" value="{{ recipe.calories or '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Изображение (оставьте пустым, чтобы не менять)</label>
+                                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                {% if recipe.image_path %}
+                                <small class="text-muted">Текущее изображение: {{ recipe.image_path }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="ingredients" class="form-label">Ингредиенты * (по одному на строку)</label>
+                                <textarea class="form-control" id="ingredients" name="ingredients" rows="10" required>{{ recipe.ingredients }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="instructions" class="form-label">Инструкции *</label>
+                                <textarea class="form-control" id="instructions" name="instructions" rows="15" required>{{ recipe.instructions }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning">Сохранить изменения</button>
+                    <a href="{{ url_for('recipes.view_recipe', id=recipe.id) }}" class="btn btn-secondary">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

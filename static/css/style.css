@@ -1,0 +1,96 @@
+/* Custom styles for Best Personal */
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* Calendar styles for habits */
+.calendar-day {
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    border: 1px solid #ddd;
+    margin: 2px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+}
+
+.calendar-day.completed {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.calendar-day.today {
+    border: 2px solid #007bff;
+}
+
+/* Pomodoro timer styles */
+.pomodoro-timer {
+    font-size: 4rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 2rem 0;
+}
+
+/* Recipe card styles */
+.recipe-image {
+    max-height: 200px;
+    object-fit: cover;
+}
+
+/* Inventory item styles */
+.inventory-image {
+    max-height: 150px;
+    object-fit: cover;
+}
+
+/* Event card styles */
+.event-card {
+    margin-bottom: 1rem;
+}
+
+.event-date {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Study card styles */
+.study-card {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    padding: 2rem;
+    margin: 2rem 0;
+}
+
+.study-card-back {
+    background-color: #f8f9fa;
+}
+

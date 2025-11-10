@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Избранные события - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-bookmark"></i> Избранные события</h2>
+        <a href="{{ url_for('events.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Назад
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for event in events %}
+    <div class="col-md-6">
+        <div class="card event-card">
+            <div class="card-body">
+                <h5 class="card-title">{{ event.title }}</h5>
+                <p class="event-date">
+                    <i class="bi bi-calendar"></i> {{ event.date.strftime('%d.%m.%Y %H:%M') }}
+                    {% if event.location %}
+                    <br><i class="bi bi-geo-alt"></i> {{ event.location }}
+                    {% endif %}
+                </p>
+                <a href="{{ url_for('events.view_event', id=event.id) }}" class="btn btn-danger btn-sm">
+                    <i class="bi bi-eye"></i> Подробнее
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> У вас нет сохраненных событий
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12 text-center mb-5">
+        <h1 class="display-4">Добро пожаловать в Best Personal!</h1>
+        <p class="lead">Ваш персональный помощник для управления жизнью</p>
+        <a href="{{ url_for('demo.demo') }}" class="btn btn-outline-primary btn-lg mt-3">
+            <i class="bi bi-play-circle"></i> Посмотреть демонстрацию
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-wallet2 display-4 text-primary mb-3"></i>
+                <h5 class="card-title">Финансы</h5>
+                <p class="card-text">Учет доходов и расходов, статистика и экспорт данных</p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('finance.index') }}" class="btn btn-primary">Открыть</a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary">Войти</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-heart-pulse display-4 text-success mb-3"></i>
+                <h5 class="card-title">Привычки</h5>
+                <p class="card-text">Трекер полезных привычек с мотивацией и статистикой</p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('habits.index') }}" class="btn btn-success">Открыть</a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-success">Войти</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-egg-fried display-4 text-warning mb-3"></i>
+                <h5 class="card-title">Рецепты</h5>
+                <p class="card-text">База рецептов, планировщик питания и список покупок</p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('recipes.index') }}" class="btn btn-warning">Открыть</a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-warning">Войти</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-book display-4 text-info mb-3"></i>
+                <h5 class="card-title">Обучение</h5>
+                <p class="card-text">Карточки для запоминания и таймер Pomodoro</p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('study.index') }}" class="btn btn-info">Открыть</a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-info">Войти</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-box-seam display-4 text-secondary mb-3"></i>
+                <h5 class="card-title">Имущество</h5>
+                <p class="card-text">Учет домашнего имущества с напоминаниями о гарантии</p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('inventory.index') }}" class="btn btn-secondary">Открыть</a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary">Войти</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar-event display-4 text-danger mb-3"></i>
+                <h5 class="card-title">События</h5>
+                <p class="card-text">Поиск и сохранение интересных событий в городе</p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('events.index') }}" class="btn btn-danger">Открыть</a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-danger">Войти</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-lg-12 text-center">
+        {% if not current_user.is_authenticated %}
+        <h3>Начните прямо сейчас!</h3>
+        <p>Зарегистрируйтесь, чтобы получить доступ ко всем функциям</p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Регистрация</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg">Вход</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

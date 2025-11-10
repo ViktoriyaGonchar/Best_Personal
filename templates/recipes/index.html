@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Рецепты - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-egg-fried"></i> Менеджер рецептов</h2>
+        <a href="{{ url_for('recipes.add_recipe') }}" class="btn btn-warning">
+            <i class="bi bi-plus-circle"></i> Добавить рецепт
+        </a>
+        <a href="{{ url_for('recipes.meal_planner') }}" class="btn btn-outline-warning">
+            <i class="bi bi-calendar-week"></i> Планировщик питания
+        </a>
+        <a href="{{ url_for('recipes.shopping_list') }}" class="btn btn-outline-warning">
+            <i class="bi bi-cart"></i> Список покупок
+        </a>
+        <a href="{{ url_for('recipes.search') }}" class="btn btn-outline-warning">
+            <i class="bi bi-search"></i> Поиск
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for recipe in recipes %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+            {% if recipe.image_path %}
+            <img src="{{ url_for('static', filename=recipe.image_path) }}" class="card-img-top recipe-image" alt="{{ recipe.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ recipe.title }}</h5>
+                {% if recipe.category %}
+                <span class="badge bg-secondary">{{ recipe.category }}</span>
+                {% endif %}
+                {% if recipe.description %}
+                <p class="card-text">{{ recipe.description[:100] }}{% if recipe.description|length > 100 %}...{% endif %}</p>
+                {% endif %}
+                <div class="mb-2">
+                    {% if recipe.prep_time %}
+                    <small class="text-muted"><i class="bi bi-clock"></i> Подготовка: {{ recipe.prep_time }} мин</small>
+                    {% endif %}
+                    {% if recipe.cook_time %}
+                    <small class="text-muted"><i class="bi bi-fire"></i> Готовка: {{ recipe.cook_time }} мин</small>
+                    {% endif %}
+                </div>
+                <a href="{{ url_for('recipes.view_recipe', id=recipe.id) }}" class="btn btn-warning btn-sm">
+                    <i class="bi bi-eye"></i> Просмотр
+                </a>
+                <a href="{{ url_for('recipes.edit_recipe', id=recipe.id) }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{{ url_for('recipes.delete_recipe', id=recipe.id) }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Удалить рецепт?')">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> У вас пока нет рецептов. Добавьте первый рецепт!
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

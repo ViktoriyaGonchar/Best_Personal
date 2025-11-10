@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Финансы - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-wallet2"></i> Персональный финансовый помощник</h2>
+        <a href="{{ url_for('finance.add_transaction') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Добавить транзакцию
+        </a>
+        <a href="{{ url_for('finance.statistics') }}" class="btn btn-outline-primary">
+            <i class="bi bi-graph-up"></i> Статистика
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <h5>Доходы (месяц)</h5>
+                <h3>{{ "%.2f"|format(income) }} ₽</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center bg-danger text-white">
+            <div class="card-body">
+                <h5>Расходы (месяц)</h5>
+                <h3>{{ "%.2f"|format(expenses) }} ₽</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <h5>Баланс</h5>
+                <h3>{{ "%.2f"|format(balance) }} ₽</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Последние транзакции</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <a href="{{ url_for('finance.export_excel') }}" class="btn btn-sm btn-success">
+                        <i class="bi bi-file-earmark-excel"></i> Экспорт в Excel
+                    </a>
+                    <a href="{{ url_for('finance.export_pdf') }}" class="btn btn-sm btn-danger">
+                        <i class="bi bi-file-earmark-pdf"></i> Экспорт в PDF
+                    </a>
+                </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Категория</th>
+                            <th>Описание</th>
+                            <th>Сумма</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.date.strftime('%d.%m.%Y') }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'success' if transaction.category.type == 'income' else 'danger' }}">
+                                    {{ transaction.category.name }}
+                                </span>
+                            </td>
+                            <td>{{ transaction.description or '-' }}</td>
+                            <td class="{{ 'text-success' if transaction.category.type == 'income' else 'text-danger' }}">
+                                {{ '+' if transaction.category.type == 'income' else '-' }}{{ "%.2f"|format(transaction.amount) }} ₽
+                            </td>
+                            <td>
+                                <a href="{{ url_for('finance.edit_transaction', id=transaction.id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{{ url_for('finance.delete_transaction', id=transaction.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Удалить транзакцию?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Нет транзакций</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

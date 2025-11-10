@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{{ recipe.title }} - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>{{ recipe.title }}</h2>
+        <a href="{{ url_for('recipes.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Назад
+        </a>
+        <a href="{{ url_for('recipes.edit_recipe', id=recipe.id) }}" class="btn btn-outline-primary">
+            <i class="bi bi-pencil"></i> Редактировать
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        {% if recipe.image_path %}
+        <img src="{{ url_for('static', filename=recipe.image_path) }}" class="img-fluid rounded mb-3" alt="{{ recipe.title }}">
+        {% endif %}
+        <div class="card">
+            <div class="card-body">
+                {% if recipe.category %}
+                <p><strong>Категория:</strong> {{ recipe.category }}</p>
+                {% endif %}
+                {% if recipe.prep_time %}
+                <p><strong>Время подготовки:</strong> {{ recipe.prep_time }} мин</p>
+                {% endif %}
+                {% if recipe.cook_time %}
+                <p><strong>Время готовки:</strong> {{ recipe.cook_time }} мин</p>
+                {% endif %}
+                {% if recipe.servings %}
+                <p><strong>Порций:</strong> {{ recipe.servings }}</p>
+                {% endif %}
+                {% if recipe.calories %}
+                <p><strong>Калории:</strong> {{ recipe.calories }} ккал/порция</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        {% if recipe.description %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5>Описание</h5>
+                <p>{{ recipe.description }}</p>
+            </div>
+        </div>
+        {% endif %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5>Ингредиенты</h5>
+                <ul>
+                    {% for ingredient in recipe.ingredients.split('\n') %}
+                    {% if ingredient.strip() %}
+                    <li>{{ ingredient.strip() }}</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5>Инструкции</h5>
+                <ol>
+                    {% for instruction in recipe.instructions.split('\n') %}
+                    {% if instruction.strip() %}
+                    <li>{{ instruction.strip() }}</li>
+                    {% endif %}
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

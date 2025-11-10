@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Статистика обучения - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-graph-up"></i> Статистика обучения</h2>
+        <a href="{{ url_for('study.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Назад
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ total_cards }}</h3>
+                <p class="text-muted">Всего карточек</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ cards_reviewed }}</h3>
+                <p class="text-muted">Просмотрено</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ cards_due }}</h3>
+                <p class="text-muted">Требуют повторения</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ total_study_time }}</h3>
+                <p class="text-muted">Минут изучено</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Статистика по темам</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Тема</th>
+                            <th>Всего карточек</th>
+                            <th>Просмотрено</th>
+                            <th>Процент</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for topic, stats in topics.items() %}
+                        <tr>
+                            <td>{{ topic }}</td>
+                            <td>{{ stats.total }}</td>
+                            <td>{{ stats.reviewed }}</td>
+                            <td>{{ "%.1f"|format((stats.reviewed / stats.total * 100) if stats.total > 0 else 0) }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

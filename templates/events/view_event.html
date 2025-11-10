@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }} - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>{{ event.title }}</h2>
+        <a href="{{ url_for('events.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Назад
+        </a>
+        {% if not event.is_saved %}
+        <a href="{{ url_for('events.save_event', id=event.id) }}" class="btn btn-outline-danger">
+            <i class="bi bi-bookmark"></i> Сохранить в избранное
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <p class="event-date">
+                    <i class="bi bi-calendar"></i> <strong>Дата и время:</strong> {{ event.date.strftime('%d.%m.%Y %H:%M') }}
+                </p>
+                {% if event.location %}
+                <p>
+                    <i class="bi bi-geo-alt"></i> <strong>Место:</strong> {{ event.location }}
+                </p>
+                {% endif %}
+                {% if event.category %}
+                <p>
+                    <strong>Категория:</strong> <span class="badge bg-secondary">{{ event.category }}</span>
+                </p>
+                {% endif %}
+                {% if event.price_type == 'free' %}
+                <p><span class="badge bg-success">Бесплатно</span></p>
+                {% elif event.price %}
+                <p><strong>Цена:</strong> {{ "%.2f"|format(event.price) }} ₽</p>
+                {% endif %}
+                {% if event.description %}
+                <div class="mt-3">
+                    <h5>Описание</h5>
+                    <p>{{ event.description }}</p>
+                </div>
+                {% endif %}
+                {% if event.source_url %}
+                <p class="mt-3">
+                    <a href="{{ event.source_url }}" target="_blank" class="btn btn-outline-primary">
+                        <i class="bi bi-link-45deg"></i> Ссылка на источник
+                    </a>
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

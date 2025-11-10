@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Редактировать предмет - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Редактировать предмет</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Название *</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ item.name }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Описание</label>
+                                <textarea class="form-control" id="description" name="description" rows="3">{{ item.description or '' }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Категория</label>
+                                <input type="text" class="form-control" id="category" name="category" value="{{ item.category or '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="room" class="form-label">Комната</label>
+                                <input type="text" class="form-control" id="room" name="room" value="{{ item.room or '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="purchase_price" class="form-label">Стоимость покупки</label>
+                                <input type="number" step="0.01" class="form-control" id="purchase_price" name="purchase_price" value="{{ item.purchase_price or '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="purchase_date" class="form-label">Дата покупки</label>
+                                <input type="date" class="form-control" id="purchase_date" name="purchase_date" value="{{ item.purchase_date.isoformat() if item.purchase_date else '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="warranty_expiry" class="form-label">Гарантия до</label>
+                                <input type="date" class="form-control" id="warranty_expiry" name="warranty_expiry" value="{{ item.warranty_expiry.isoformat() if item.warranty_expiry else '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="serial_number" class="form-label">Серийный номер</label>
+                                <input type="text" class="form-control" id="serial_number" name="serial_number" value="{{ item.serial_number or '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Фотография (оставьте пустым, чтобы не менять)</label>
+                                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                {% if item.image_path %}
+                                <small class="text-muted">Текущее изображение: {{ item.image_path }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Сохранить изменения</button>
+                    <a href="{{ url_for('inventory.view_item', id=item.id) }}" class="btn btn-outline-secondary">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Обучение - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-book"></i> Персональный помощник для обучения</h2>
+        <a href="{{ url_for('study.cards') }}" class="btn btn-info">
+            <i class="bi bi-collection"></i> Мои карточки
+        </a>
+        <a href="{{ url_for('study.add_card') }}" class="btn btn-info">
+            <i class="bi bi-plus-circle"></i> Добавить карточку
+        </a>
+        <a href="{{ url_for('study.review') }}" class="btn btn-success">
+            <i class="bi bi-arrow-repeat"></i> Повторить
+        </a>
+        <a href="{{ url_for('study.pomodoro') }}" class="btn btn-warning">
+            <i class="bi bi-hourglass-split"></i> Pomodoro
+        </a>
+        <a href="{{ url_for('study.statistics') }}" class="btn btn-outline-info">
+            <i class="bi bi-graph-up"></i> Статистика
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ total_cards }}</h3>
+                <p class="text-muted">Всего карточек</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ cards_due }}</h3>
+                <p class="text-muted">Требуют повторения</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ recent_sessions|length }}</h3>
+                <p class="text-muted">Последние сессии</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Последние сессии обучения</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_sessions %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Тип</th>
+                            <th>Длительность</th>
+                            <th>Карточек просмотрено</th>
+                            <th>Дата</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in recent_sessions %}
+                        <tr>
+                            <td>
+                                {% if session.session_type == 'pomodoro' %}
+                                <span class="badge bg-warning">Pomodoro</span>
+                                {% else %}
+                                <span class="badge bg-info">Повторение</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ session.duration }} мин</td>
+                            <td>{{ session.cards_reviewed }}</td>
+                            <td>{{ session.date.strftime('%d.%m.%Y %H:%M') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted">Нет сессий обучения</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

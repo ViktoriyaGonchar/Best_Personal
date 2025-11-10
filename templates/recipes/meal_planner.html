@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Планировщик питания - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-calendar-week"></i> Планировщик питания</h2>
+        <p class="text-muted">Неделя: {{ week_start.strftime('%d.%m.%Y') }} - {{ week_end.strftime('%d.%m.%Y') }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>День</th>
+                            <th>Завтрак</th>
+                            <th>Обед</th>
+                            <th>Ужин</th>
+                            <th>Перекус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for current_date in week_dates %}
+                        {% set date_str = current_date.isoformat() %}
+                        <tr>
+                            <td><strong>{{ current_date.strftime('%d.%m.%Y') }}</strong></td>
+                            {% for meal_type in ['breakfast', 'lunch', 'dinner', 'snack'] %}
+                            <td>
+                                {% if date_str in plans_by_date and meal_type in plans_by_date[date_str] %}
+                                {% set plan = plans_by_date[date_str][meal_type] %}
+                                <div class="mb-2">
+                                    <strong>{{ plan.recipe.title }}</strong>
+                                    <br>
+                                    <a href="{{ url_for('recipes.delete_meal_plan', id=plan.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Удалить из плана?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                                {% else %}
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addMealModal" data-date="{{ date_str }}" data-meal="{{ meal_type }}">
+                                    <i class="bi bi-plus"></i> Добавить
+                                </button>
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal для добавления блюда -->
+<div class="modal fade" id="addMealModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добавить блюдо</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('recipes.add_meal_plan') }}">
+                <div class="modal-body">
+                    <input type="hidden" id="modal_date" name="date">
+                    <input type="hidden" id="modal_meal_type" name="meal_type">
+                    <div class="mb-3">
+                        <label for="recipe_id" class="form-label">Рецепт</label>
+                        <select class="form-select" id="recipe_id" name="recipe_id" required>
+                            <option value="">Выберите рецепт</option>
+                            {% for recipe in recipes %}
+                            <option value="{{ recipe.id }}">{{ recipe.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const addMealModal = document.getElementById('addMealModal');
+    addMealModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const date = button.getAttribute('data-date');
+        const mealType = button.getAttribute('data-meal');
+        
+        document.getElementById('modal_date').value = date;
+        document.getElementById('modal_meal_type').value = mealType;
+    });
+</script>
+{% endblock %}
+

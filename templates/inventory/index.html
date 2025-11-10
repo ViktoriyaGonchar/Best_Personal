@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Имущество - Best Personal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-box-seam"></i> Учет домашнего имущества</h2>
+        <a href="{{ url_for('inventory.add_item') }}" class="btn btn-secondary">
+            <i class="bi bi-plus-circle"></i> Добавить предмет
+        </a>
+        <a href="{{ url_for('inventory.search') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-search"></i> Поиск
+        </a>
+        <a href="{{ url_for('inventory.warranty') }}" class="btn btn-outline-warning">
+            <i class="bi bi-shield-check"></i> Гарантия
+        </a>
+        <a href="{{ url_for('inventory.statistics') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-graph-up"></i> Статистика
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ total_items }}</h3>
+                <p class="text-muted">Всего предметов</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ "%.2f"|format(total_value) }} ₽</h3>
+                <p class="text-muted">Общая стоимость</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if warranty_warnings %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle"></i> 
+            <strong>Внимание!</strong> У {{ warranty_warnings|length }} предметов скоро истекает гарантия
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <select class="form-select" name="category" onchange="this.form.submit()">
+                    <option value="">Все категории</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat }}" {{ 'selected' if selected_category == cat }}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" name="room" onchange="this.form.submit()">
+                    <option value="">Все комнаты</option>
+                    {% for room in rooms %}
+                    <option value="{{ room }}" {{ 'selected' if selected_room == room }}>{{ room }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for item in items %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+            {% if item.image_path %}
+            <img src="{{ url_for('static', filename=item.image_path) }}" class="card-img-top inventory-image" alt="{{ item.name }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ item.name }}</h5>
+                {% if item.category %}
+                <span class="badge bg-secondary">{{ item.category }}</span>
+                {% endif %}
+                {% if item.room %}
+                <span class="badge bg-info">{{ item.room }}</span>
+                {% endif %}
+                {% if item.purchase_price %}
+                <p class="card-text"><strong>Стоимость:</strong> {{ "%.2f"|format(item.purchase_price) }} ₽</p>
+                {% endif %}
+                <a href="{{ url_for('inventory.view_item', id=item.id) }}" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-eye"></i> Подробнее
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> У вас пока нет предметов в каталоге. Добавьте первый предмет!
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
